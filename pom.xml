@@ -1,0 +1,165 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example</groupId>
+  <artifactId>demo-ci-bdd</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>demo-ci-bdd</name>
+  <description>CI + BDD + Performance (Gatling) starter</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+
+    <!-- JUnit / Platform -->
+    <junit.jupiter.version>5.10.2</junit.jupiter.version>
+    <junit.platform.version>1.10.2</junit.platform.version>
+
+    <!-- Cucumber -->
+    <cucumber.version>7.14.0</cucumber.version>
+
+    <!-- Plugins -->
+    <surefire.plugin.version>3.2.5</surefire.plugin.version>
+    <jacoco.version>0.8.11</jacoco.version>
+    <gatling.plugin.version>4.20.1</gatling.plugin.version>
+    <scala.maven.plugin.version>4.5.6</scala.maven.plugin.version>
+  </properties>
+
+  <dependencies>
+    <!-- JUnit 5 -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- JUnit Platform Suite -->
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-suite</artifactId>
+      <version>${junit.platform.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Cucumber -->
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-java</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-junit-platform-engine</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Gatling DSL + reportes -->
+    <dependency>
+      <groupId>io.gatling.highcharts</groupId>
+      <artifactId>gatling-charts-highcharts</artifactId>
+      <version>3.14.3</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Scala runtime (requerido por scala-maven-plugin) -->
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>2.13.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Compilador Java -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <release>17</release>
+        </configuration>
+      </plugin>
+
+      <!-- Scala plugin para compilar simulaciones Gatling -->
+     <plugin>
+  <groupId>net.alchim31.maven</groupId>
+  <artifactId>scala-maven-plugin</artifactId>
+  <version>${scala.maven.plugin.version}</version>
+  <executions>
+    <execution>
+      <id>compile-scala-tests</id>
+      <phase>test-compile</phase>
+      <goals>
+        <goal>add-source</goal>
+        <goal>testCompile</goal>
+      </goals>
+      <configuration>
+        <testSourceDirectories>
+          <testSourceDirectory>${project.basedir}/src/test/scala</testSourceDirectory>
+        </testSourceDirectories>
+        <scalaCompatVersion>2.13</scalaCompatVersion>
+        <recompileMode>incremental</recompileMode>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+
+      <!-- Surefire: JUnit + Cucumber -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire.plugin.version}</version>
+        <configuration>
+          <useModulePath>false</useModulePath>
+          <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+          <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>
+        </configuration>
+      </plugin>
+
+      <!-- JaCoCo: cobertura -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Gatling: performance -->
+      <plugin>
+        <groupId>io.gatling</groupId>
+        <artifactId>gatling-maven-plugin</artifactId>
+        <version>${gatling.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>gatling-test</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

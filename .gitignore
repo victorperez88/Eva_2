@@ -1,0 +1,24 @@
+# Java / Maven
+target/
+*.class
+*.log
+*.ctxt
+
+# IDEs
+.idea/
+.project
+.classpath
+.settings/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Reports & temp
+cucumber-report.html
+cucumber-report.json
+**/cucumber-report*/
+**/surefire-reports*/
+**/gatling-results*/
+**/jacoco.exec
